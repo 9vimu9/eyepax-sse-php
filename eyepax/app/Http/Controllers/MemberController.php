@@ -21,16 +21,6 @@ class MemberController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param StoreMemberRequest $request
@@ -78,11 +68,20 @@ class MemberController extends Controller
      *
      * @param UpdateMemberRequest $request
      * @param Member $member
-     * @return Response
+     * @return RedirectResponse
      */
     public function update(UpdateMemberRequest $request, Member $member)
     {
-        //
+        $member->update([
+            'full_name' => $request->get('full_name'),
+            'email' => $request->get('email'),
+            'telephone' => $request->get('telephone'),
+            'joined_date' => $request->get('joined_date'),
+            'current_route' => $request->get('current_route'),
+            'comments' => $request->get('comments'),
+        ]);
+
+        return redirect()->route("members.index");
     }
 
     /**
