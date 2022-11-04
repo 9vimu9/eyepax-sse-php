@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MemberController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,10 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-Route::get('/members', function () {
-    return view('welcome');
+Route::controller(MemberController::class)->prefix("/members")->group(function () {
+    Route::get('', 'index')->name("members.index");
+    Route::post('', 'store')->name("members.store");
 });
