@@ -47,6 +47,7 @@ class MemberTest extends TestCase
         $response->assertValid('email');
         $response->assertRedirect($this->indexUri);
     }
+
 //
     public function test_member_registration_requires_unique_telephone(): void
     {
@@ -73,7 +74,7 @@ class MemberTest extends TestCase
     public function test_member_registration_requires_formatted_joined_date(): void
     {
         $memberData = $this->memberData;
-        $memberData['joined_date']='2022-12-11';
+        $memberData['joined_date'] = '2022-12-11';
         $response = $this->post('/members', $memberData);
         $response->assertValid('joined_date');
         $response->assertRedirect($this->indexUri);
@@ -90,6 +91,13 @@ class MemberTest extends TestCase
     {
         $member = Member::factory()->create();
         $response = $this->put("/members/$member->id", $member->toArray());
+        $response->assertRedirect($this->indexUri);
+    }
+
+    public function test_remove_member(): void
+    {
+        $member = Member::factory()->create();
+        $response = $this->delete("/members/$member->id");
         $response->assertRedirect($this->indexUri);
     }
 

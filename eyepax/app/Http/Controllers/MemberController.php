@@ -88,10 +88,11 @@ class MemberController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Member $member
-     * @return Response
+     * @return RedirectResponse
      */
-    public function destroy(Member $member)
+    public function destroy(Member $member): RedirectResponse
     {
-        //
+        $member->delete();
+        return redirect()->route("members.index");
     }
 }
