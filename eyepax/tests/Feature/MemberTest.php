@@ -86,4 +86,12 @@ class MemberTest extends TestCase
         $response->assertRedirect($this->indexUri);
     }
 
+    public function test_can_update_member(): void
+    {
+        $member = Member::factory()->create(['full_name' => "old_name_here"]);
+        $member->full_name = "new_name_here";
+        $response = $this->put("/members/$member->id", $member->toArray());
+        $response->assertRedirect($this->indexUri);
+    }
+
 }

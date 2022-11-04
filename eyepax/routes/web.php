@@ -18,4 +18,5 @@ use Illuminate\Support\Facades\Route;
 Route::controller(MemberController::class)->prefix("/members")->group(function () {
     Route::get('', 'index')->name("members.index");
     Route::post('', 'store')->name("members.store");
+    Route::put('/{id}', 'update')->name("members.update");
 });
