@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Member;
+use App\Services\MemberService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 
@@ -24,19 +25,12 @@ class MemberController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreMemberRequest $request
+     * @param MemberService $memberService
      * @return RedirectResponse
      */
-    public function store(StoreMemberRequest $request)
+    public function store(StoreMemberRequest $request, MemberService $memberService): RedirectResponse
     {
-        Member::create([
-            'full_name' => $request->get('full_name'),
-            'email' => $request->get('email'),
-            'telephone' => $request->get('telephone'),
-            'joined_date' => $request->get('joined_date'),
-            'current_route' => $request->get('current_route'),
-            'comments' => $request->get('comments'),
-        ]);
-
+        $memberService->store($request);
         return redirect()->route("members.index");
 
     }
@@ -67,32 +61,26 @@ class MemberController extends Controller
      * Update the specified resource in storage.
      *
      * @param UpdateMemberRequest $request
-     * @param Member $member
+     * @param $memberID
+     * @param MemberService $memberService
      * @return RedirectResponse
      */
-    public function update(UpdateMemberRequest $request, Member $member)
+    public function update(UpdateMemberRequest $request, $memberID, MemberService $memberService): RedirectResponse
     {
-        $member->update([
-            'full_name' => $request->get('full_name'),
-            'email' => $request->get('email'),
-            'telephone' => $request->get('telephone'),
-            'joined_date' => $request->get('joined_date'),
-            'current_route' => $request->get('current_route'),
-            'comments' => $request->get('comments'),
-        ]);
-
+        $memberService->update($request, $memberID);
         return redirect()->route("members.index");
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Member $member
+     * @param $memberID
+     * @param MemberService $memberService
      * @return RedirectResponse
      */
-    public function destroy(Member $member): RedirectResponse
+    public function destroy($memberID, MemberService $memberService): RedirectResponse
     {
-        $member->delete();
+        $memberService->delete($memberID);
         return redirect()->route("members.index");
     }
 }
