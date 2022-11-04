@@ -11,7 +11,7 @@ class MemberService
 {
     public function store(StoreMemberRequest $request): MemberDTO
     {
-        $member = Member::create([
+        $member = (new Member())->newQuery()->create([
             'full_name' => $request->get('full_name'),
             'email' => $request->get('email'),
             'telephone' => $request->get('telephone'),
@@ -35,7 +35,7 @@ class MemberService
 
     public function update(UpdateMemberRequest $request, $memberID): MemberDTO
     {
-        $member = tap(Member::find($memberID))->update([
+        $member = tap((new Member())->newQuery()->findOrFail($memberID))->update([
             'full_name' => $request->get('full_name'),
             'email' => $request->get('email'),
             'telephone' => $request->get('telephone'),
@@ -54,10 +54,10 @@ class MemberService
         );
     }
 
-    public function delete(int $memberID): void
+    public function delete(int $memberID): bool
     {
-        Member::find($memberID)->delete();
-
+        $result = (new Member())->newQuery()->findOrFail($memberID)->delete();
+        return is_null($result) ? false : $result;
     }
 
 }

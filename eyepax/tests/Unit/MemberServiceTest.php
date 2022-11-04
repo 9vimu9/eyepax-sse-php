@@ -68,10 +68,12 @@ class MemberServiceTest extends TestCase
         );
         $this->assertEquals($expectedUpdatedMember, $updatedMember);
     }
-//
-//
-//    public function test_delete()
-//    {
-//        $this->assertTrue(true);
-//    }
+
+
+    public function test_delete(): void
+    {
+        $member = Member::factory()->create();
+        $updatedMember = (new MemberService())->delete($member->id);
+        $this->assertTrue($updatedMember);
+    }
 }
