@@ -88,8 +88,7 @@ class MemberTest extends TestCase
 
     public function test_can_update_member(): void
     {
-        $member = Member::factory()->create(['full_name' => "old_name_here"]);
-        $member->full_name = "new_name_here";
+        $member = Member::factory()->create();
         $response = $this->put("/members/$member->id", $member->toArray());
         $response->assertRedirect($this->indexUri);
     }
