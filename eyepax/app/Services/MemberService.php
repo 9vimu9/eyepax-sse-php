@@ -33,16 +33,25 @@ class MemberService
 
     }
 
-    public function update(UpdateMemberRequest $request, $memberID): void
+    public function update(UpdateMemberRequest $request, $memberID): MemberDTO
     {
-        Member::find($memberID)->update([
+        $member = tap(Member::find($memberID))->update([
             'full_name' => $request->get('full_name'),
             'email' => $request->get('email'),
             'telephone' => $request->get('telephone'),
             'joined_date' => $request->get('joined_date'),
             'current_route' => $request->get('current_route'),
             'comments' => $request->get('comments'),
-        ]);
+        ])->first();
+        return new MemberDTO(
+            $member->id,
+            $member->full_name,
+            $member->email,
+            $member->telephone,
+            $member->joined_date,
+            $member->current_route,
+            $member->comments
+        );
     }
 
     public function delete(int $memberID): void

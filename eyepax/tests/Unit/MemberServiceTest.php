@@ -4,8 +4,11 @@ namespace Tests\Unit;
 
 use App\DTOs\MemberDTO;
 use App\Http\Requests\StoreMemberRequest;
+use App\Http\Requests\UpdateMemberRequest;
+use App\Models\Member;
 use App\Services\MemberService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+
 //use PHPUnit\Framework\TestCase;
 use Tests\TestCase;
 
@@ -46,10 +49,25 @@ class MemberServiceTest extends TestCase
         $this->assertEquals($expectedStoredMember, $storedMember);
     }
 
-//    public function test_update()
-//    {
-//        $this->assertTrue(true);
-//    }
+    public function test_update(): void
+    {
+        $member = Member::factory()->create();
+        $member->full_name = "name_updated";
+        $updateMemberRequest = new UpdateMemberRequest();
+        $updateMemberRequest->merge($member->toArray());
+        $updatedMember = (new MemberService())->update($updateMemberRequest,$member->id);
+
+        $expectedUpdatedMember = new MemberDTO(
+            $member->id,
+            $member->full_name,
+            $member->email,
+            $member->telephone,
+            $member->joined_date,
+            $member->current_route,
+            $member->comments
+        );
+        $this->assertEquals($expectedUpdatedMember, $updatedMember);
+    }
 //
 //
 //    public function test_delete()
