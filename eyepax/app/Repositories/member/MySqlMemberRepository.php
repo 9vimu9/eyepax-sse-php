@@ -3,16 +3,22 @@
 namespace App\Repositories\member;
 
 use App\DTOs\MemberDTO;
-use App\Models\Member;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class MySqlMemberRepository implements MemberRepositoryInterface
 {
+    private Builder $builder;
+
+    public function __construct(Builder $builder)
+    {
+        $this->builder = $builder;
+    }
 
 
     public function store(Request $request): MemberDTO
     {
-        $member = (new Member())->newQuery()->create([
+        $member = $this->builder->create([
             'full_name' => $request->get('full_name'),
             'email' => $request->get('email'),
             'telephone' => $request->get('telephone'),
@@ -34,7 +40,7 @@ class MySqlMemberRepository implements MemberRepositoryInterface
 
     public function update(Request $request, int $memberID): MemberDTO
     {
-        $member = tap((new Member())->newQuery()->findOrFail($memberID))->update([
+        $member = tap($this->builder->findOrFail($memberID))->update([
             'full_name' => $request->get('full_name'),
             'email' => $request->get('email'),
             'telephone' => $request->get('telephone'),
@@ -56,7 +62,7 @@ class MySqlMemberRepository implements MemberRepositoryInterface
 
     public function delete(int $memberID): bool
     {
-        $result = (new Member())->newQuery()->findOrFail($memberID)->delete();
+        $result = $this->builder->findOrFail($memberID)->delete();
         return is_null($result) ? false : $result;
     }
 }

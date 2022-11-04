@@ -4,7 +4,9 @@ namespace Tests\Unit;
 
 use App\DTOs\MemberDTO;
 use App\Models\Member;
+use App\Repositories\member\MemberRepositoryInterface;
 use App\Services\MemberService;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 //use PHPUnit\Framework\TestCase;
@@ -29,12 +31,13 @@ class MemberServiceTest extends TestCase
      * A basic unit test example.
      *
      * @return void
+     * @throws BindingResolutionException
      */
     public function test_store(): void
     {
         $storeMemberRequest = new Request();
         $storeMemberRequest->merge($this->memberData);
-        $storedMember = (new MemberService())->store($storeMemberRequest);
+        $storedMember = app()->make(MemberService::class)->store($storeMemberRequest);
 
         $expectedStoredMember = new MemberDTO(
             1,
@@ -48,13 +51,16 @@ class MemberServiceTest extends TestCase
         $this->assertEquals($expectedStoredMember, $storedMember);
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function test_update(): void
     {
         $member = Member::factory()->create();
         $member->full_name = "name_updated";
         $updateMemberRequest = new Request();
         $updateMemberRequest->merge($member->toArray());
-        $updatedMember = (new MemberService())->update($updateMemberRequest,$member->id);
+        $updatedMember = app()->make(MemberService::class)->update($updateMemberRequest, $member->id);
 
         $expectedUpdatedMember = new MemberDTO(
             $member->id,
@@ -69,10 +75,13 @@ class MemberServiceTest extends TestCase
     }
 
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function test_delete(): void
     {
         $member = Member::factory()->create();
-        $updatedMember = (new MemberService())->delete($member->id);
+        $updatedMember = app()->make(MemberService::class)->delete($member->id);
         $this->assertTrue($updatedMember);
     }
 }

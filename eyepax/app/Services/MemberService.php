@@ -3,24 +3,31 @@
 namespace App\Services;
 
 use App\DTOs\MemberDTO;
-use App\Repositories\member\MySqlMemberRepository;
+use App\Repositories\member\MemberRepositoryInterface;
 use Illuminate\Http\Request;
 
 class MemberService
 {
+    public MemberRepositoryInterface $memberRepository;
+
+    public function __construct(MemberRepositoryInterface $memberRepository)
+    {
+        $this->memberRepository = $memberRepository;
+    }
+
     public function store(Request $request): MemberDTO
     {
-        return (new MySqlMemberRepository())->store($request);
+        return $this->memberRepository->store($request);
     }
 
     public function update(Request $request, $memberID): MemberDTO
     {
-        return (new MySqlMemberRepository())->update($request,$memberID);
+        return $this->memberRepository->update($request, $memberID);
     }
 
     public function delete(int $memberID): bool
     {
-        return (new MySqlMemberRepository())->delete($memberID);
+        return $this->memberRepository->delete($memberID);
     }
 
 }
