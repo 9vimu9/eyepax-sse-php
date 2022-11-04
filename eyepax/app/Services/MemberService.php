@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
+use App\Http\Requests\StoreMemberRequest;
+use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Member;
 
 class MemberService
 {
-    public function store($request): void
+    public function store(StoreMemberRequest $request): void
     {
         Member::create([
             'full_name' => $request->get('full_name'),
@@ -20,7 +22,7 @@ class MemberService
 
     }
 
-    public function update($request, $memberID): void
+    public function update(UpdateMemberRequest $request, $memberID): void
     {
         Member::find($memberID)->update([
             'full_name' => $request->get('full_name'),
@@ -32,7 +34,7 @@ class MemberService
         ]);
     }
 
-    public function delete($memberID): void
+    public function delete(int $memberID): void
     {
         Member::find($memberID)->delete();
 
