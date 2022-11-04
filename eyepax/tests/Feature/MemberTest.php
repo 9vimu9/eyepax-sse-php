@@ -6,17 +6,24 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class TeamTest extends TestCase
+class MemberTest extends TestCase
 {
     /**
      * A basic feature test example.
      *
      * @return void
      */
-    public function test_team_screen_can_be_rendered()
+    public function test_member_screen_can_be_rendered()
     {
-        $response = $this->get('/team');
+        $response = $this->get('/members');
 
         $response->assertStatus(200);
     }
+
+//    public function test_new_member_can_add()
+//    {
+//        $response = $this->post('')
+//
+//        $response->assertStatus(200);
+//    }
 }
