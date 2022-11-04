@@ -3,13 +3,12 @@
 namespace App\Services;
 
 use App\DTOs\MemberDTO;
-use App\Http\Requests\StoreMemberRequest;
-use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Member;
+use Illuminate\Http\Request;
 
 class MemberService
 {
-    public function store(StoreMemberRequest $request): MemberDTO
+    public function store(Request $request): MemberDTO
     {
         $member = (new Member())->newQuery()->create([
             'full_name' => $request->get('full_name'),
@@ -33,7 +32,7 @@ class MemberService
 
     }
 
-    public function update(UpdateMemberRequest $request, $memberID): MemberDTO
+    public function update(Request $request, $memberID): MemberDTO
     {
         $member = tap((new Member())->newQuery()->findOrFail($memberID))->update([
             'full_name' => $request->get('full_name'),

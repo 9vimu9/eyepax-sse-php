@@ -3,13 +3,12 @@
 namespace Tests\Unit;
 
 use App\DTOs\MemberDTO;
-use App\Http\Requests\StoreMemberRequest;
-use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Member;
 use App\Services\MemberService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 //use PHPUnit\Framework\TestCase;
+use Illuminate\Http\Request;
 use Tests\TestCase;
 
 
@@ -33,7 +32,7 @@ class MemberServiceTest extends TestCase
      */
     public function test_store(): void
     {
-        $storeMemberRequest = new StoreMemberRequest();
+        $storeMemberRequest = new Request();
         $storeMemberRequest->merge($this->memberData);
         $storedMember = (new MemberService())->store($storeMemberRequest);
 
@@ -53,7 +52,7 @@ class MemberServiceTest extends TestCase
     {
         $member = Member::factory()->create();
         $member->full_name = "name_updated";
-        $updateMemberRequest = new UpdateMemberRequest();
+        $updateMemberRequest = new Request();
         $updateMemberRequest->merge($member->toArray());
         $updatedMember = (new MemberService())->update($updateMemberRequest,$member->id);
 
