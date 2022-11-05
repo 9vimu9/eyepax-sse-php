@@ -4,7 +4,6 @@ namespace Tests\Unit;
 
 use App\DTOs\MemberDTO;
 use App\Models\Member;
-use App\Repositories\member\MemberRepositoryInterface;
 use App\Services\MemberService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
