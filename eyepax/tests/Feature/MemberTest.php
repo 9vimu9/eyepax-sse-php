@@ -40,21 +40,24 @@ class MemberTest extends TestCase
         $response->assertRedirect($this->indexUri);
     }
 
-    public function test_member_registration_requires_unique_email(): void
+    public function test_member_cant_register_without_unique_email(): void
     {
-        Member::factory()->create(['email' => 'other@email.com']);
-        $response = $this->post('/members', $this->memberData);
-        $response->assertValid('email');
-        $response->assertRedirect($this->indexUri);
+        Member::factory()->create(["email"=>"member1@mail.com"]);
+        $member2=Member::factory()->create(["email"=>"member2@mail.com"]);
+        $member2->email="member1@mail.com";
+        $response = $this->post("/members", $member2->toArray());
+        $response->assertSessionHasErrors(['email']);
     }
 
-//
-    public function test_member_registration_requires_unique_telephone(): void
+    public function test_member_cant_register_without_unique_telephone(): void
     {
-        Member::factory()->create(['telephone' => '11']);
-        $response = $this->post('/members', $this->memberData);
-        $response->assertValid('telephone');
-        $response->assertRedirect($this->indexUri);
+        $member1Telephone="1234567";
+        $member2Telephone="12345678";
+        Member::factory()->create(["telephone"=>$member1Telephone]);
+        $member2=Member::factory()->create(["telephone"=>$member2Telephone]);
+        $member2->telephone=$member1Telephone;
+        $response = $this->post("/members", $member2->toArray());
+        $response->assertSessionHasErrors(['telephone']);
     }
 
     public function test_member_registration_requires_full_name(): void
@@ -92,6 +95,26 @@ class MemberTest extends TestCase
         $member = Member::factory()->create();
         $response = $this->put("/members/$member->id", $member->toArray());
         $response->assertRedirect($this->indexUri);
+    }
+
+    public function test_cant_update_member_with_duplicate_email(): void
+    {
+        Member::factory()->create(["email"=>"member1@mail.com"]);
+        $member2=Member::factory()->create(["email"=>"member2@mail.com"]);
+        $member2->email="member1@mail.com";
+        $response = $this->put("/members/$member2->id", $member2->toArray());
+        $response->assertSessionHasErrors(['email']);
+    }
+
+    public function test_cant_update_member_with_duplicate_telephone(): void
+    {
+        $member1Telephone="1234567";
+        $member2Telephone="12345678";
+        Member::factory()->create(["telephone"=>$member1Telephone]);
+        $member2=Member::factory()->create(["telephone"=>$member2Telephone]);
+        $member2->telephone=$member1Telephone;
+        $response = $this->put("/members/$member2->id", $member2->toArray());
+        $response->assertSessionHasErrors(['telephone']);
     }
 
     public function test_remove_member(): void
