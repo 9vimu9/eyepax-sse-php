@@ -3,14 +3,14 @@
 namespace App\Repositories\member;
 
 use App\DTOs\MemberDTO;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Http\Request;
 
 class MySqlMemberRepository implements MemberRepositoryInterface
 {
-    private Builder $builder;
+    private BuilderContract $builder;
 
-    public function __construct(Builder $builder)
+    public function __construct(BuilderContract $builder)
     {
         $this->builder = $builder;
     }

@@ -11,6 +11,13 @@ use Illuminate\Http\Response;
 
 class MemberController extends Controller
 {
+    private MemberService $memberService;
+
+    public function __construct(MemberService $memberService)
+    {
+        $this->memberService = $memberService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -25,12 +32,11 @@ class MemberController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreMemberRequest $request
-     * @param MemberService $memberService
      * @return RedirectResponse
      */
-    public function store(StoreMemberRequest $request, MemberService $memberService): RedirectResponse
+    public function store(StoreMemberRequest $request): RedirectResponse
     {
-        $memberService->store($request);
+        $this->memberService->store($request);
         return redirect()->route("members.index");
 
     }
@@ -62,12 +68,11 @@ class MemberController extends Controller
      *
      * @param UpdateMemberRequest $request
      * @param $memberID
-     * @param MemberService $memberService
      * @return RedirectResponse
      */
-    public function update(UpdateMemberRequest $request, $memberID, MemberService $memberService): RedirectResponse
+    public function update(UpdateMemberRequest $request, $memberID): RedirectResponse
     {
-        $memberService->update($request, $memberID);
+        $this->memberService->update($request, $memberID);
         return redirect()->route("members.index");
     }
 
@@ -75,12 +80,11 @@ class MemberController extends Controller
      * Remove the specified resource from storage.
      *
      * @param $memberID
-     * @param MemberService $memberService
      * @return RedirectResponse
      */
-    public function destroy($memberID, MemberService $memberService): RedirectResponse
+    public function destroy($memberID): RedirectResponse
     {
-        $memberService->delete($memberID);
+        $this->memberService->delete($memberID);
         return redirect()->route("members.index");
     }
 }
