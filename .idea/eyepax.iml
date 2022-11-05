@@ -110,8 +110,6 @@
       <excludeFolder url="file://$MODULE_DIR$/eyepax/vendor/dragonmantank/cron-expression" />
       <excludeFolder url="file://$MODULE_DIR$/eyepax/vendor/tijsverkoyen/css-to-inline-styles" />
       <excludeFolder url="file://$MODULE_DIR$/eyepax/vendor/graham-campbell/result-type" />
-      <excludeFolder url="file://$MODULE_DIR$/eyepax/vendor/php-webdriver/webdriver" />
-      <excludeFolder url="file://$MODULE_DIR$/eyepax/vendor/laravel/dusk" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
