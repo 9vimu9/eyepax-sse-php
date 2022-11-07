@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Core\Requests\BaseFormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdateMemberRequest extends BaseFormRequest

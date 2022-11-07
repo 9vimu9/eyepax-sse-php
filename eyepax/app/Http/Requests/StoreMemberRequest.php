@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 
+use App\Core\Requests\BaseFormRequest;
+
 class StoreMemberRequest extends BaseFormRequest
 {
     /**

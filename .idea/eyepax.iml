@@ -110,6 +110,10 @@
       <excludeFolder url="file://$MODULE_DIR$/eyepax/vendor/dragonmantank/cron-expression" />
       <excludeFolder url="file://$MODULE_DIR$/eyepax/vendor/tijsverkoyen/css-to-inline-styles" />
       <excludeFolder url="file://$MODULE_DIR$/eyepax/vendor/graham-campbell/result-type" />
+      <excludeFolder url="file://$MODULE_DIR$/eyepax/vendor/phpdocumentor/reflection-common" />
+      <excludeFolder url="file://$MODULE_DIR$/eyepax/vendor/phpdocumentor/type-resolver" />
+      <excludeFolder url="file://$MODULE_DIR$/eyepax/vendor/spatie/laravel-data" />
+      <excludeFolder url="file://$MODULE_DIR$/eyepax/vendor/spatie/laravel-package-tools" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
