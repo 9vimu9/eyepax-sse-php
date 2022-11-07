@@ -2,6 +2,7 @@
 
 namespace App\Core\Requests;
 
+use App\Core\JSEND\JsendResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -11,10 +12,7 @@ class BaseFormRequest extends FormRequest
 {
     protected function failedValidation(Validator $validator)
     {
-        $response = [
-            'status' => "fail",
-            'data' => $validator->errors()
-        ];
+        $response = JsendResponse::fail($validator->errors()->toArray());
         throw new HttpResponseException(response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 

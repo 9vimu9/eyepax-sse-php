@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Core\JSEND\JsendResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
@@ -42,19 +43,13 @@ class MemberController extends Controller
     public function store(StoreMemberRequest $request): JsonResponse
     {
         try {
-            $data = [
-                'status' => 'success',
-                'data' => [
-                    'member' => $this->memberService->store($request)->toArray()
-                ]
-            ];
+            $data = JsendResponse::success([
+                'member' => $this->memberService->store($request)->toArray()
+            ]);
             return response()->json($data, ResponseAlias::HTTP_CREATED);
 
         } catch (Exception $exception) {
-            $data = [
-                'status' => 'error',
-                'message' => $exception->getMessage()
-            ];
+            $data = JsendResponse::error($exception->getMessage());
             return response()->json($data, ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
 
         }
@@ -93,12 +88,9 @@ class MemberController extends Controller
     public function update(UpdateMemberRequest $request, $memberID): JsonResponse
     {
         try {
-            $data = [
-                'status' => 'success',
-                'data' => [
-                    'member' => $this->memberService->update($request, $memberID)->toArray()
-                ]
-            ];
+            $data = JsendResponse::success([
+                'member' => $this->memberService->update($request, $memberID)->toArray()
+            ]);
             return response()->json($data, ResponseAlias::HTTP_OK);
 
         } catch (Exception $exception) {
@@ -124,24 +116,15 @@ class MemberController extends Controller
             if (!$this->memberService->delete($memberID)) {
                 throw new RuntimeException("user deletion failed");
             }
-            $data = [
-                'status' => 'success',
-                'data' => null
-            ];
+            $data = JsendResponse::success([]);
             return response()->json($data, ResponseAlias::HTTP_NO_CONTENT);
 
         } catch (ModelNotFoundException $exception) {
-            $data = [
-                'status' => 'error',
-                'message' => $exception->getMessage()
-            ];
+            $data = JsendResponse::error($exception->getMessage());
             return response()->json($data, ResponseAlias::HTTP_NOT_FOUND);
 
         } catch (Exception $exception) {
-            $data = [
-                'status' => 'error',
-                'message' => $exception->getMessage()
-            ];
+            $data = JsendResponse::error($exception->getMessage());
             return response()->json($data, ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
 
         }
