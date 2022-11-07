@@ -15,6 +15,7 @@ services:
       - DB_HOST=mariadb
       - DB_PORT=3306
       - DB_USERNAME=root
+      - DB_password=root
       - DB_DATABASE=eyepax
     volumes:
       - './eyepax:/app'
