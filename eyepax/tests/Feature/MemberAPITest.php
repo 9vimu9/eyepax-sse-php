@@ -220,9 +220,24 @@ class MemberAPITest extends TestCase
     public function test_returns_404_if_member_id_not_included(): void
     {
         $member = Member::factory()->create();
-        $memberID = $member->id+1;
+        $memberID = $member->id + 1;
         $response = $this->json(Request::METHOD_DELETE, "$this->indexUri/$memberID");
         $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function test_list_members()
+    {
+        Member::factory()->count(50)->create()->toArray();
+        $response = $this->json(Request::METHOD_GET, $this->indexUri);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'status',
+            'data' => [
+                'members'
+            ]
+
+        ]);
+
     }
 
 

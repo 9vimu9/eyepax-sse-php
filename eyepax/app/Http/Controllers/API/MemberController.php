@@ -27,11 +27,26 @@ class MemberController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        try {
+            $members = [];
+            foreach (Member::all() as $member) {
+                $members[] = $member->getData();
+            }
+
+            $data = JsendResponse::success([
+                'members' => $members
+            ]);
+            return response()->json($data, ResponseAlias::HTTP_OK);
+
+        } catch (Exception $exception) {
+            $data = JsendResponse::error($exception->getMessage());
+            return response()->json($data, ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
+
+        }
     }
 
     /**
