@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 
-class StoreMemberRequest extends FormRequest
+class StoreMemberRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,6 +26,7 @@ class StoreMemberRequest extends FormRequest
             'full_name' => 'required',
             'joined_date' => 'required|date',
             'current_route' => 'required',
+            'comments' => 'required',
             'email' => 'required|email|unique:members',
             'telephone' => 'required|unique:members',
         ];

@@ -2,13 +2,10 @@
 
 namespace Tests\Unit;
 
-use App\DTOs\MemberDTO;
 use App\Models\Member;
 use App\Services\MemberService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-
-//use PHPUnit\Framework\TestCase;
 use Illuminate\Http\Request;
 use Tests\TestCase;
 
@@ -37,17 +34,14 @@ class MemberServiceTest extends TestCase
         $storeMemberRequest = new Request();
         $storeMemberRequest->merge($this->memberData);
         $storedMember = app()->make(MemberService::class)->store($storeMemberRequest);
-
-        $expectedStoredMember = new MemberDTO(
-            1,
-            $this->memberData["full_name"],
-            $this->memberData["email"],
-            $this->memberData["telephone"],
-            $this->memberData["joined_date"],
-            $this->memberData["current_route"],
-            $this->memberData["comments"]
-        );
-        $this->assertEquals($expectedStoredMember, $storedMember);
+        $this->assertObjectHasAttribute("id",$storedMember);
+        $this->assertObjectHasAttribute("full_name",$storedMember);
+        $this->assertObjectHasAttribute("email",$storedMember);
+        $this->assertObjectHasAttribute("telephone",$storedMember);
+        $this->assertObjectHasAttribute("joined_date",$storedMember);
+        $this->assertObjectHasAttribute("current_route",$storedMember);
+        $this->assertObjectHasAttribute("comments",$storedMember);
+        $this->assertObjectHasAttribute("created_at",$storedMember);
     }
 
     /**
@@ -61,16 +55,14 @@ class MemberServiceTest extends TestCase
         $updateMemberRequest->merge($member->toArray());
         $updatedMember = app()->make(MemberService::class)->update($updateMemberRequest, $member->id);
 
-        $expectedUpdatedMember = new MemberDTO(
-            $member->id,
-            $member->full_name,
-            $member->email,
-            $member->telephone,
-            $member->joined_date,
-            $member->current_route,
-            $member->comments
-        );
-        $this->assertEquals($expectedUpdatedMember, $updatedMember);
+        $this->assertObjectHasAttribute("id",$updatedMember);
+        $this->assertObjectHasAttribute("full_name",$updatedMember);
+        $this->assertObjectHasAttribute("email",$updatedMember);
+        $this->assertObjectHasAttribute("telephone",$updatedMember);
+        $this->assertObjectHasAttribute("joined_date",$updatedMember);
+        $this->assertObjectHasAttribute("current_route",$updatedMember);
+        $this->assertObjectHasAttribute("comments",$updatedMember);
+        $this->assertObjectHasAttribute("created_at",$updatedMember);
     }
 
 

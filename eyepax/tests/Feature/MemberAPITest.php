@@ -57,7 +57,7 @@ class MemberAPITest extends TestCase
         $memberInput["email"] = $duplicateEmail;
         $response = $this->json(Request::METHOD_POST, $this->indexUri, $memberInput);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonValidationErrorFor("email");
+        $response->assertJsonValidationErrorFor("email", "data");
     }
 
     public function test_api_member_cant_register_without_unique_telephone(): void
@@ -68,7 +68,7 @@ class MemberAPITest extends TestCase
         $memberInput["telephone"] = $duplicateTelephone;
         $response = $this->json(Request::METHOD_POST, $this->indexUri, $memberInput);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonValidationErrorFor("telephone");
+        $response->assertJsonValidationErrorFor("telephone", "data");
     }
 
     public function test_api_member_cant_register_without_full_name(): void
@@ -77,7 +77,7 @@ class MemberAPITest extends TestCase
         unset($memberInput["full_name"]);
         $response = $this->json(Request::METHOD_POST, $this->indexUri, $memberInput);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonValidationErrorFor("full_name");
+        $response->assertJsonValidationErrorFor("full_name", "data");
     }
 
     public function test_api_member_cant_register_without_joined_date(): void
@@ -86,7 +86,7 @@ class MemberAPITest extends TestCase
         unset($memberInput["joined_date"]);
         $response = $this->json(Request::METHOD_POST, $this->indexUri, $memberInput);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonValidationErrorFor("joined_date");
+        $response->assertJsonValidationErrorFor("joined_date", "data");
     }
 
     public function test_api_member_registration_requires_formatted_joined_date(): void
@@ -95,7 +95,7 @@ class MemberAPITest extends TestCase
         $memberInput['joined_date'] = "not a proper date";
         $response = $this->json(Request::METHOD_POST, $this->indexUri, $memberInput);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonValidationErrorFor("joined_date");
+        $response->assertJsonValidationErrorFor("joined_date", "data");
     }
 
     public function test_api_member_cant_register_without_current_route(): void
@@ -104,7 +104,7 @@ class MemberAPITest extends TestCase
         unset($memberInput["current_route"]);
         $response = $this->json(Request::METHOD_POST, $this->indexUri, $memberInput);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonValidationErrorFor("current_route");
+        $response->assertJsonValidationErrorFor("current_route", "data");
     }
 
     public function test_api_member_cant_register_without_comments(): void
@@ -113,22 +113,14 @@ class MemberAPITest extends TestCase
         unset($memberInput["comments"]);
         $response = $this->json(Request::METHOD_POST, $this->indexUri, $memberInput);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonValidationErrorFor("comments");
+        $response->assertJsonValidationErrorFor("comments", "data");
     }
 
-
-
-    public function test_can_update_member(): void
-    {
-        $member = Member::factory()->create();
-        $response = $this->put("/members/$member->id", $member->toArray());
-        $response->assertRedirect($this->indexUri);
-    }
 
     public function test_api_can_update_member(): void
     {
         $member = Member::factory()->create($this->memberData);
-        $response = $this->json(Request::METHOD_PUT, "$this->indexUri/$member->id", $this->memberDatap);
+        $response = $this->json(Request::METHOD_PUT, "$this->indexUri/$member->id", $this->memberData);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'status',
@@ -150,31 +142,88 @@ class MemberAPITest extends TestCase
 
     }
 
-    public function test_cant_update_member_with_duplicate_email(): void
+    public function test_api_cant_update_member_with_duplicate_email(): void
     {
-        Member::factory()->create(["email" => "member1@mail.com"]);
-        $member2 = Member::factory()->create(["email" => "member2@mail.com"]);
-        $member2->email = "member1@mail.com";
-        $response = $this->put("/members/$member2->id", $member2->toArray());
-        $response->assertSessionHasErrors(['email']);
+        $email1 = "member1@mail.com";
+        $email2 = "member2@mail.com";
+        Member::factory()->create(["email" => $email1]);
+        $member2 = Member::factory()->create(["email" => $email2]);
+        $memberInput = $this->memberData;
+        $memberInput["email"] = $email1;
+        $response = $this->json(Request::METHOD_PUT, "$this->indexUri/$member2->id", $memberInput);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrorFor("email", "data");
     }
 
-    public function test_cant_update_member_with_duplicate_telephone(): void
+    public function test_api_cant_update_member_with_duplicate_telephone(): void
     {
-        $member1Telephone = "1234567";
-        $member2Telephone = "12345678";
-        Member::factory()->create(["telephone" => $member1Telephone]);
-        $member2 = Member::factory()->create(["telephone" => $member2Telephone]);
-        $member2->telephone = $member1Telephone;
-        $response = $this->put("/members/$member2->id", $member2->toArray());
-        $response->assertSessionHasErrors(['telephone']);
+        $telephone1 = "123456";
+        $telephone2 = "1234567";
+        Member::factory()->create(["telephone" => $telephone1]);
+        $member2 = Member::factory()->create(["telephone" => $telephone2]);
+        $memberInput = $this->memberData;
+        $memberInput["telephone"] = $telephone1;
+        $response = $this->json(Request::METHOD_PUT, "$this->indexUri/$member2->id", $memberInput);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrorFor("telephone", "data");
     }
+
+    public function test_api_member_cant_update_without_full_name(): void
+    {
+        $member = Member::factory()->create();
+        $memberInput = $this->memberData;
+        unset($memberInput["full_name"]);
+        $response = $this->json(Request::METHOD_PUT, "$this->indexUri/$member->id", $memberInput);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrorFor("full_name", "data");
+    }
+
+    public function test_api_member_cant_update_without_joined_date(): void
+    {
+        $member = Member::factory()->create();
+        $memberInput = $this->memberData;
+        unset($memberInput["joined_date"]);
+        $response = $this->json(Request::METHOD_PUT, "$this->indexUri/$member->id", $memberInput);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrorFor("joined_date", "data");
+    }
+
+    public function test_api_member_cant_update_without_current_route(): void
+    {
+        $member = Member::factory()->create();
+        $memberInput = $this->memberData;
+        unset($memberInput["current_route"]);
+        $response = $this->json(Request::METHOD_PUT, "$this->indexUri/$member->id", $memberInput);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrorFor("current_route", "data");
+    }
+
+    public function test_api_member_cant_update_without_comments(): void
+    {
+        $member = Member::factory()->create();
+        $memberInput = $this->memberData;
+        unset($memberInput["comments"]);
+        $response = $this->json(Request::METHOD_PUT, "$this->indexUri/$member->id", $memberInput);
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonValidationErrorFor("comments", "data");
+    }
+
 
     public function test_remove_member(): void
     {
         $member = Member::factory()->create();
-        $response = $this->delete("/members/$member->id");
-        $response->assertRedirect($this->indexUri);
+        $response = $this->json(Request::METHOD_DELETE, "$this->indexUri/$member->id");
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+        $this->assertDatabaseMissing($this->table, $this->memberData);
     }
+
+    public function test_returns_404_if_member_id_not_included(): void
+    {
+        $member = Member::factory()->create();
+        $memberID = $member->id+1;
+        $response = $this->json(Request::METHOD_DELETE, "$this->indexUri/$memberID");
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
 
 }

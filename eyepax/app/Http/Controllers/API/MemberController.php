@@ -8,9 +8,10 @@ use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Member;
 use App\Services\MemberService;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class MemberController extends Controller
@@ -66,8 +67,7 @@ class MemberController extends Controller
      * @param Member $member
      * @return Response
      */
-    public
-    function show(Member $member)
+    public function show(Member $member)
     {
         //
     }
@@ -78,8 +78,7 @@ class MemberController extends Controller
      * @param Member $member
      * @return Response
      */
-    public
-    function edit(Member $member)
+    public function edit(Member $member)
     {
         //
     }
@@ -91,8 +90,7 @@ class MemberController extends Controller
      * @param $memberID
      * @return JsonResponse
      */
-    public
-    function update(UpdateMemberRequest $request, $memberID): JsonResponse
+    public function update(UpdateMemberRequest $request, $memberID): JsonResponse
     {
         try {
             $data = [
@@ -118,12 +116,35 @@ class MemberController extends Controller
      * Remove the specified resource from storage.
      *
      * @param $memberID
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public
-    function destroy($memberID): RedirectResponse
+    public function destroy($memberID): JsonResponse
     {
-        $this->memberService->delete($memberID);
-        return redirect()->route("members.index");
+        try {
+            if (!$this->memberService->delete($memberID)) {
+                throw new RuntimeException("user deletion failed");
+            }
+            $data = [
+                'status' => 'success',
+                'data' => null
+            ];
+            return response()->json($data, ResponseAlias::HTTP_NO_CONTENT);
+
+        } catch (ModelNotFoundException $exception) {
+            $data = [
+                'status' => 'error',
+                'message' => $exception->getMessage()
+            ];
+            return response()->json($data, ResponseAlias::HTTP_NOT_FOUND);
+
+        } catch (Exception $exception) {
+            $data = [
+                'status' => 'error',
+                'message' => $exception->getMessage()
+            ];
+            return response()->json($data, ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
+
+        }
+
     }
 }

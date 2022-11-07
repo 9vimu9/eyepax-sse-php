@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Member;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class MemberTest extends TestCase
@@ -46,7 +45,7 @@ class MemberTest extends TestCase
         $member2=Member::factory()->create(["email"=>"member2@mail.com"]);
         $member2->email="member1@mail.com";
         $response = $this->post("/members", $member2->toArray());
-        $response->assertSessionHasErrors(['email']);
+        $response->assertInvalid('email',null,'data');
     }
 
     public function test_member_cant_register_without_unique_telephone(): void
@@ -57,7 +56,7 @@ class MemberTest extends TestCase
         $member2=Member::factory()->create(["telephone"=>$member2Telephone]);
         $member2->telephone=$member1Telephone;
         $response = $this->post("/members", $member2->toArray());
-        $response->assertSessionHasErrors(['telephone']);
+        $response->assertInvalid('telephone',null,'data');
     }
 
     public function test_member_registration_requires_full_name(): void
@@ -70,7 +69,7 @@ class MemberTest extends TestCase
     public function test_member_registration_requires_joined_date(): void
     {
         $response = $this->post('/members', $this->memberData);
-        $response->assertValid('joined_date');
+        $response->assertValid('joined_date','data');
         $response->assertRedirect($this->indexUri);
     }
 
@@ -79,14 +78,14 @@ class MemberTest extends TestCase
         $memberData = $this->memberData;
         $memberData['joined_date'] = '2022-12-11';
         $response = $this->post('/members', $memberData);
-        $response->assertValid('joined_date');
+        $response->assertValid('joined_date','data');
         $response->assertRedirect($this->indexUri);
     }
 
     public function test_member_registration_requires_current_route(): void
     {
         $response = $this->post('/members', $this->memberData);
-        $response->assertValid('current_route');
+        $response->assertValid('current_route','data');
         $response->assertRedirect($this->indexUri);
     }
 
@@ -103,7 +102,9 @@ class MemberTest extends TestCase
         $member2=Member::factory()->create(["email"=>"member2@mail.com"]);
         $member2->email="member1@mail.com";
         $response = $this->put("/members/$member2->id", $member2->toArray());
-        $response->assertSessionHasErrors(['email']);
+        $response->assertInvalid('email',null,'data');
+
+
     }
 
     public function test_cant_update_member_with_duplicate_telephone(): void
@@ -114,7 +115,7 @@ class MemberTest extends TestCase
         $member2=Member::factory()->create(["telephone"=>$member2Telephone]);
         $member2->telephone=$member1Telephone;
         $response = $this->put("/members/$member2->id", $member2->toArray());
-        $response->assertSessionHasErrors(['telephone']);
+        $response->assertInvalid('telephone',null,'data');
     }
 
     public function test_remove_member(): void

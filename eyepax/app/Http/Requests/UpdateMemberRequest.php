@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdateMemberRequest extends BaseFormRequest
@@ -27,6 +28,7 @@ class UpdateMemberRequest extends BaseFormRequest
             'full_name' => 'required',
             'joined_date' => 'required|date',
             'current_route' => 'required',
+            'comments' => 'required',
             'email' => [
                 'required',
                 'email',
