@@ -15,6 +15,11 @@ class MemberService
         $this->memberRepository = $memberRepository;
     }
 
+    public function list(): array
+    {
+        return $this->memberRepository->list();
+    }
+
     public function store(Request $request): MemberDTO
     {
         return $this->memberRepository->store($request);

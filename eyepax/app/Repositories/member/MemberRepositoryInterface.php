@@ -9,6 +9,8 @@ interface MemberRepositoryInterface
 {
     public function store(Request $request): MemberDTO;
 
+    public function list(): array;
+
     public function update(Request $request,int $memberID): MemberDTO;
 
     public function delete(int $memberID): bool;

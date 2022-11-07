@@ -32,13 +32,8 @@ class MemberController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $members = [];
-            foreach (Member::all() as $member) {
-                $members[] = $member->getData();
-            }
-
             $data = JsendResponse::success([
-                'members' => $members
+                'members' => $this->memberService->list()
             ]);
             return response()->json($data, ResponseAlias::HTTP_OK);
 

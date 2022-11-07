@@ -3,6 +3,7 @@
 namespace App\Repositories\member;
 
 use App\DTOs\MemberDTO;
+use App\Models\Member;
 use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Http\Request;
 
@@ -47,4 +48,14 @@ class MySqlMemberRepository implements MemberRepositoryInterface
         $result = $this->builder->findOrFail($memberID)->delete();
         return is_null($result) ? false : $result;
     }
+
+    public function list(): array
+    {
+        $members = [];
+        foreach (Member::all() as $member) {
+            $members[] = $member->getData();
+        }
+        return $members;
+    }
+
 }
