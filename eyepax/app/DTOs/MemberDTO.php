@@ -1,18 +1,18 @@
 <?php
+
 namespace App\DTOs;
 
-class MemberDTO
+use Spatie\LaravelData\Data;
+
+class MemberDTO extends Data
 {
-    public function __construct(
-        private readonly int    $id,
-        private readonly string $full_name,
-        private readonly string $email,
-        private readonly string $telephone,
-        private readonly string $joined_date,
-        private readonly string $current_route,
-        private readonly string $comments,
-    )
-    {
-    }
+    public int $id;
+    public string $full_name;
+    public string $email;
+    public string $telephone;
+    public string $joined_date;
+    public string $current_route;
+    public string $comments;
+    public string $created_at;
 
 }
