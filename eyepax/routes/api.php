@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\MemberController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +17,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::controller(MemberController::class)->prefix("/members")->name("api.")->group(function () {
+    Route::get('', 'index')->name("members.index");
+    Route::post('', 'store')->name("members.store");
+    Route::put('/{id}', 'update')->name("members.update");
+    Route::delete('/{id}', 'destroy')->name("members.delete");
 });
