@@ -1,21 +1,20 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import MembersIndex from '../components/members/Index.vue'
-
-// import CompaniesCreate from '../components/companies/CompaniesCreate.vue'
+import MembersCreate from '../components/members/Create.vue'
 // import CompaniesEdit from '../components/companies/CompaniesEdit.vue'
 
 const routes = [
     {
-        path: '/dashboard',
-        name: 'companies.index',
+        path: '/members',
+        name: 'members.index',
         component: MembersIndex
+    },
+    {
+        path: '/members/create',
+        name: 'members.create',
+        component: MembersCreate
     }
-    // {
-    //     path: '/companies/create',
-    //     name: 'companies.create',
-    //     component: CompaniesCreate
-    // },
     // {
     //     path: '/companies/:id/edit',
     //     name: 'companies.edit',

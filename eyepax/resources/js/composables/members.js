@@ -26,7 +26,7 @@ export default function useMembers() {
             await router.push({name: 'members.index'})
         } catch (e) {
             if (e.response.status === 422) {
-                errors.value = e.response.data.errors
+                errors.value = e.response.data.data
             }
         }
     }
