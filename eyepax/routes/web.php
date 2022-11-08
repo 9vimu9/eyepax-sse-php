@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\MemberController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,12 +12,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::controller(MemberController::class)->prefix("/members")->group(function () {
-    Route::get('', 'index')->name("members.index");
-    Route::post('', 'store')->name("members.store");
-    Route::put('/{id}', 'update')->name("members.update");
-    Route::delete('/{id}', 'destroy')->name("members.delete");
-});
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,6 +19,10 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard');
 
 require __DIR__.'/auth.php';
+
+Route::view('/{any}', 'dashboard')
+    ->middleware('auth')
+    ->where('any', '.*');
