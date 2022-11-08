@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 
 export default function useMembers() {
     const members = ref([])
-    const company = ref([])
+    const member = ref([])
     const router = useRouter()
     const errors = ref('')
 
@@ -16,7 +16,7 @@ export default function useMembers() {
 
     const getMember = async (id) => {
         let response = await axios.get('/api/members/' + id)
-        company.value = response.data.data;
+        member.value = response.data.data.member;
     }
 
     const storeMember = async (data) => {
@@ -34,7 +34,7 @@ export default function useMembers() {
     const updateMember = async (id) => {
         errors.value = ''
         try {
-            await axios.put('/api/members/' + id, company.value)
+            await axios.put('/api/members/' + id, member.value)
             await router.push({name: 'members.index'})
         } catch (e) {
             if (e.response.status === 422) {
@@ -50,7 +50,7 @@ export default function useMembers() {
 
     return {
         members,
-        company,
+        member,
         errors,
         getMembers,
         getMember,
