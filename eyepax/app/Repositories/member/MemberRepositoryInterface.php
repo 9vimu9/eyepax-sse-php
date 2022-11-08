@@ -15,4 +15,6 @@ interface MemberRepositoryInterface
 
     public function delete(int $memberID): bool;
 
+    public function show(int $memberID): MemberDTO;
+
 }

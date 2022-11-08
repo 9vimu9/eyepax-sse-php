@@ -75,4 +75,18 @@ class MemberServiceTest extends TestCase
         $updatedMember = app()->make(MemberService::class)->delete($member->id);
         $this->assertTrue($updatedMember);
     }
+
+    public function test_show(): void
+    {
+        $member = app()->make(MemberService::class)->show(Member::factory()->create()->id);
+
+        $this->assertObjectHasAttribute("id",$member);
+        $this->assertObjectHasAttribute("full_name",$member);
+        $this->assertObjectHasAttribute("email",$member);
+        $this->assertObjectHasAttribute("telephone",$member);
+        $this->assertObjectHasAttribute("joined_date",$member);
+        $this->assertObjectHasAttribute("current_route",$member);
+        $this->assertObjectHasAttribute("comments",$member);
+        $this->assertObjectHasAttribute("created_at",$member);
+    }
 }

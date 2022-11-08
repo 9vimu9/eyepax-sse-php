@@ -35,4 +35,9 @@ class MemberService
         return $this->memberRepository->delete($memberID);
     }
 
+    public function show($memberID): MemberDTO
+    {
+        return $this->memberRepository->show($memberID);
+    }
+
 }

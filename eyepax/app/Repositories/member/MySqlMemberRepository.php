@@ -3,7 +3,6 @@
 namespace App\Repositories\member;
 
 use App\DTOs\MemberDTO;
-use App\Models\Member;
 use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Http\Request;
 
@@ -52,10 +51,14 @@ class MySqlMemberRepository implements MemberRepositoryInterface
     public function list(): array
     {
         $members = [];
-        foreach (Member::all() as $member) {
+        foreach ($this->builder->get() as $member) {
             $members[] = $member->getData();
         }
         return $members;
     }
 
+    public function show(int $memberID): MemberDTO
+    {
+        return $this->builder->findOrFail($memberID)->getData();
+    }
 }

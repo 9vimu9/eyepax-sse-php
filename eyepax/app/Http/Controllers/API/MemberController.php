@@ -6,12 +6,10 @@ use App\Core\JSEND\JsendResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
-use App\Models\Member;
 use App\Services\MemberService;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
@@ -69,24 +67,29 @@ class MemberController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Member $member
-     * @return Response
+     * @param $memberID
+     * @return JsonResponse
      */
-    public function show(Member $member)
+    public function show($memberID): JsonResponse
     {
-        //
+
+        try {
+            $data = JsendResponse::success([
+                'member' => $this->memberService->show($memberID)->toArray()
+            ]);
+            return response()->json($data, ResponseAlias::HTTP_OK);
+
+        } catch (ModelNotFoundException $exception) {
+            $data = JsendResponse::error($exception->getMessage());
+            return response()->json($data, ResponseAlias::HTTP_NOT_FOUND);
+
+        } catch (Exception $exception) {
+            $data = JsendResponse::error($exception->getMessage());
+            return response()->json($data, ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
+
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param Member $member
-     * @return Response
-     */
-    public function edit(Member $member)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.

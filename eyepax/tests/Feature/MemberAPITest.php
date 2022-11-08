@@ -24,27 +24,29 @@ class MemberAPITest extends TestCase
     public string $indexUri = 'api/members';
     public string $table = 'members';
 
+    public array $memberDataStructure=[
+        'status',
+        'data' => [
+            'member' => [
+                'id',
+                'full_name',
+                'email',
+                'telephone',
+                'joined_date',
+                'current_route',
+                'comments',
+                'created_at'
+            ]
+        ]
+
+    ];
+
 
     public function test_api_new_member_can_add_to_the_team(): void
     {
         $response = $this->json(Request::METHOD_POST, $this->indexUri, $this->memberData);
         $response->assertStatus(Response::HTTP_CREATED);
-        $response->assertJsonStructure([
-            'status',
-            'data' => [
-                'member' => [
-                    'id',
-                    'full_name',
-                    'email',
-                    'telephone',
-                    'joined_date',
-                    'current_route',
-                    'comments',
-                    'created_at'
-                ]
-            ]
-
-        ]);
+        $response->assertJsonStructure($this->memberDataStructure);
         $this->assertDatabaseHas($this->table, $this->memberData);
 
     }
@@ -122,22 +124,7 @@ class MemberAPITest extends TestCase
         $member = Member::factory()->create($this->memberData);
         $response = $this->json(Request::METHOD_PUT, "$this->indexUri/$member->id", $this->memberData);
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonStructure([
-            'status',
-            'data' => [
-                'member' => [
-                    'id',
-                    'full_name',
-                    'email',
-                    'telephone',
-                    'joined_date',
-                    'current_route',
-                    'comments',
-                    'created_at'
-                ]
-            ]
-
-        ]);
+        $response->assertJsonStructure($this->memberDataStructure);
         $this->assertDatabaseHas($this->table, $this->memberData);
 
     }
@@ -217,11 +204,27 @@ class MemberAPITest extends TestCase
         $this->assertDatabaseMissing($this->table, $this->memberData);
     }
 
-    public function test_returns_404_if_member_id_not_included(): void
+    public function test_returns_404_if_member_to_remove_has_invalid_id(): void
     {
         $member = Member::factory()->create();
         $memberID = $member->id + 1;
         $response = $this->json(Request::METHOD_DELETE, "$this->indexUri/$memberID");
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function test_get_member(): void
+    {
+        $member = Member::factory()->create();
+        $response = $this->json(Request::METHOD_GET, "$this->indexUri/$member->id");
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure($this->memberDataStructure);
+    }
+
+    public function test_returns_404_if_member_id_not_included(): void
+    {
+        $member = Member::factory()->create();
+        $memberID = $member->id + 1;
+        $response = $this->json(Request::METHOD_GET, "$this->indexUri/$memberID");
         $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
